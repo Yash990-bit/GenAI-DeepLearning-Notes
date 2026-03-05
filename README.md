@@ -39,4 +39,42 @@ model.add(Embedding(input_dim=1000, output_dim=16, input_length=max_len))
 model.add(SimpleRNN(32))
 
 model.add(Dense(1, activation='sigmoid'))
- 
+
+ # Compile Model
+
+ model.compile(
+    optimizer='adam',
+    loss='binary_crossentropy',
+    metrics=['accuracy']
+)
+
+# Train Model
+
+model.fit(
+    X_train,
+    np.array(y_train),
+    epochs=10,
+    validation_data=(X_test, y_test)
+)
+
+# Evaluate Model
+
+loss, acc = model.evaluate(X_test, y_test)
+
+print("Test Accuracy:", acc)
+
+# Predict New Sentence
+test_text = ["I love this film"]
+
+seq = tokenizer.texts_to_sequences(test_text)
+
+pad = pad_sequences(seq, maxlen=max_len, padding='post')
+
+prediction = model.predict(pad)
+
+if prediction > 0.5:
+    print("Positive")
+else:
+    print("Negative")
+
+
